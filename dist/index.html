@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title></title>
+  <style>
+    #contentType {
+      width: 300px;
+    }
+    #testButton {
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+<fieldset>
+  <legend>Test Media Capabilities</legend>
+  <p>
+    <input type="radio" id="video" name="type" checked />
+    <label for="video">Video</label>
+  </p>
+  <p>
+    <label for="contentType">Content Type</label> : <input id="contentType" type="text" value='video/mp4;codecs="avc1.64002a"' /><br/>
+  </p>
+  <p>
+    <label for="width">Width</label> : <input id="width" type="number" value="1920" /><br/>
+  </p>
+  <p>
+    <label for="height">Height</label> : <input id="height" type="number" value="1080" /><br/>
+  </p>
+  <p>
+    <label for="bitrate">Bitrate</label> : <input id="bitrate" type="number" value="16000000" /><br/>
+  </p>
+  <p>
+    <label for="framerate">Framerate</label> : <input id="framerate" type="number" value="60" /><br/>
+  </p>
+  <button id="testButton">Test media capability</button>
+</fieldset>
+
+<section id="mediaCapabilities" style="visibility: hidden;">
+  <h1>Result</h1>
+  <p id="supported"></p>
+  <p id="smooth"></p>
+  <p id="powerEfficient"></p>
+</section>
+
+<script>
+function main() {
+    document.getElementById('testButton')
+      .addEventListener('click', testDecodingInfo);
+
+    const video = document.getElementById('video');
+    const contentType = document.getElementById('contentType');
+    const width = document.getElementById('width');
+    const height = document.getElementById('height');
+    const bitrate = document.getElementById('bitrate');
+    const framerate = document.getElementById('framerate');
+    const mediaCapabilities = document.getElementById('mediaCapabilities');
+    const supported = document.getElementById('supported');
+    const smooth = document.getElementById('smooth');
+    const powerEfficient = document.getElementById('powerEfficient');
+
+    function testDecodingInfo() {
+        if (video.checked) {
+            const configuration = {
+                type: 'media-source',
+                video: {
+                    contentType: contentType.value,
+                    width: +width.value,
+                    height: +height.value,
+                    bitrate: +bitrate.value,
+                    framerate: +framerate.value,
+                },
+            };
+    
+            navigator
+                .mediaCapabilities
+                .decodingInfo(configuration)
+                .then((v) => {
+                    mediaCapabilities.style.visibility = '';
+                    supported.textContent = `supported: ${v.supported}`;
+                    smooth.textContent = `smooth: ${v.smooth}`;
+                    powerEfficient.textContent = `powerEfficient: ${v.powerEfficient}`;
+                });
+        }
+    }
+
+}
+
+main();
+</script>
+</body>
+</html>
